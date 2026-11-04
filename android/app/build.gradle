@@ -1,0 +1,67 @@
+plugins {
+    id "com.android.application"
+    id "kotlin-android"
+    id "dev.flutter.flutter-gradle-plugin"
+}
+
+android {
+    namespace "com.piratekingadventure.game"
+    compileSdk flutter.compileSdkVersion
+    ndkVersion flutter.ndkVersion
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    defaultConfig {
+        applicationId "com.piratekingadventure.game"
+        minSdkVersion flutter.minSdkVersion
+        targetSdkVersion flutter.targetSdkVersion
+        versionCode flutter.versionCode
+        versionName flutter.versionName
+    }
+
+    buildTypes {
+        release {
+            // توقيع debug ليكون الـ APK قابلاً للتثبيت مباشرة
+            signingConfig signingConfigs.debug
+        }
+    }
+}
+
+flutter {
+    source "../.."
+}
+
+// تنزيل Three.js أثناء البناء ودمجه داخل الـ APK ليعمل التطبيق بدون إنترنت
+def threeFile = file("src/main/assets/three.min.js")
+tasks.register("downloadThree") {
+    outputs.file(threeFile)
+    doLast {
+        if (threeFile.exists() && threeFile.length() > 100000) return
+        threeFile.parentFile.mkdirs()
+        def urls = [
+            "https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js",
+            "https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js",
+            "https://unpkg.com/three@0.128.0/build/three.min.js"
+        ]
+        boolean ok = false
+        for (u in urls) {
+            for (int i = 0; i < 3 && !ok; i++) {
+                try {
+                    threeFile.bytes = new URL(u).bytes
+                    ok = threeFile.length() > 100000
+                } catch (Exception e) {
+                    println("three.js download failed (${u}): ${e.message}")
+                    sleep(3000)
+                }
+            }
+            if (ok) break
+        }
+        if (!ok) throw new GradleException("Could not download three.min.js")
+    }
+}
+afterEvaluate {
+    tasks.matching { it.name == "preBuild" }.configureEach { dependsOn "downloadThree" }
+}
