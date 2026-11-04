@@ -1,2 +1,32 @@
-# PirateKingAdventure_v1
-Flutter project created by KLENCOD IDE
+# مغامرة ملك القراصنة — Pirate King Adventure (v1)
+
+لعبة مغامرات **ثلاثية الأبعاد** للأندرويد (Three.js)، تعمل **بدون إنترنت** بعد التثبيت. بنية المشروع كمشروع Flutter.
+
+- **الحزمة:** `com.piratekingadventure.game`  •  **الإصدار:** 1.0.0+1
+
+## الميزات
+1. عالم ثلاثي الأبعاد: بحر وجزيرة وشجرة نخيل وإضاءة وظلال وضباب.
+2. شخصية لوفي بقبعة القش: مشي يمين/يسار، قفز بفيزياء وجاذبية.
+3. كاميرا سينمائية خلف الشخصية بحركة ناعمة.
+4. قتال: زر هجوم بقفزة أمامية وتأثير ضربة، وشريطا صحة للاعب والعدو.
+5. مهمة: اهزم القرصان للحصول على **زورو**، مع رسائل المهمة والانتصار.
+6. زر المهارة 🌪️: يعمل بعد ضم زورو (قطع الرياح).
+7. أزرار تحكم باللمس، ملء الشاشة بوضع أفقي.
+
+## بنية المشروع
+```
+pubspec.yaml            ← في الجذر
+lib/main.dart
+android/                ← تطبيق أندرويد (WebView + اللعبة في app/src/main/assets/index.html)
+assets/cover.png   store/icon_512.png
+.github/workflows/main.yml
+```
+اللعبة نفسها في `android/app/src/main/assets/index.html`، ويُنزَّل Three.js تلقائياً أثناء البناء ويُدمج داخل الـ APK.
+
+## البناء
+ارفع **محتويات** المجلد إلى جذر مستودع GitHub (بحيث يظهر `pubspec.yaml` مباشرة)، ثم Actions ← Build Flutter APK.
+الناتج: `app-release.apk` (قابل للتثبيت). أو محلياً: `flutter pub get && flutter build apk --release`.
+
+## ملاحظات
+- لم يُبنَ هذا المشروع في بيئة الإنشاء (بلا Flutter ولا Android SDK). أرسل سجل البناء إن ظهر خطأ.
+- التطبيق بلا إذن INTERNET.
